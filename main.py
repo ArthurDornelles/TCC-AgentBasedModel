@@ -1,4 +1,4 @@
-from config import number_of_states, total_people, iterations
+from config import number_of_states, total_people, iterations, production_tax
 from src.initial_setting import set_initial_array
 from src.utils.Log import Logger
 from src.iterations import make_iterations

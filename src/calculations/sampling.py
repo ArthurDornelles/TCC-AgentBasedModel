@@ -16,4 +16,5 @@ def sample(array: np.array) -> np.array:
             for state in np.sort(np.unique(array[:, 1]))
         ]
     )
+
     return sampling_array
