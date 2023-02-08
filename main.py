@@ -8,7 +8,6 @@ logger = Logger()
 
 
 def main() -> None:
-
     logger.info(
         f"Starting initial array for {total_people} persons, {number_of_states} states and {iterations} iterations"
     )

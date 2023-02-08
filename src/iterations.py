@@ -2,11 +2,18 @@ import numpy as np
 
 from src.calculations.sampling import sample
 from src.calculations.exchange import perform_exchange
+from src.utils.Log import Logger
+
+global logger
+logger = Logger()
 
 
 def make_iterations(array: np.array, iterations: int) -> np.array:
-    sampling_array = sample(array)
-    print(make_transaction(array, sampling_array))
+    for iteration in range(iterations):
+        array = make_transaction(array, sample(array))
+        logger.info(f"Finished iteration {iteration+1}")
+
+    print(array)
 
 
 def make_transaction(array: np.array, sampling_array: np.array) -> np.array:
@@ -27,5 +34,4 @@ def make_transaction(array: np.array, sampling_array: np.array) -> np.array:
             )
             state_tax_collected[count] += w_gov
         count += 1
-        print(f"finished {count} state")
     return array
