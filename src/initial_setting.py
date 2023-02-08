@@ -8,9 +8,8 @@ def set_initial_array(
     initial_wealth = 100
     array = np.array(
         [
-            [index, state, initial_wealth]
-            for state in range(number_of_states)
-            for index in range(number_of_people_by_state)
+            [index, index // number_of_people_by_state, initial_wealth]
+            for index in range(number_of_people_by_state * number_of_states)
         ]
     )
     return array
