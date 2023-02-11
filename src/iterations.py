@@ -2,6 +2,8 @@ import numpy as np
 
 from src.calculations.sampling import sample
 from src.calculations.exchange import perform_exchange
+from src.calculations.living_cost import living_cost_calculation
+from src.calculations.government_help import government_help_by_state
 from src.utils.Log import Logger
 
 global logger
@@ -10,7 +12,14 @@ logger = Logger()
 
 def make_iterations(array: np.array, iterations: int) -> np.array:
     for iteration in range(iterations):
-        array = make_transaction(array, sample(array))
+        logger.info(f"Starting Transactions of Iteration {iteration}")
+        array, state_tax_collected = make_transaction(array, sample(array))
+        logger.info(f"Starting Living Cost Calculation of Iteration {iteration}")
+        array = living_cost_calculation(array)
+        logger.info(f"Starting Government Help of Iteration {iteration}")
+        array = add_government_help(array, state_tax_collected)
+        logger.info(f"Starting Migration of Iteration {iteration}")
+        array = migration(array)
         logger.info(f"Finished iteration {iteration+1}")
 
     print(array)
@@ -34,4 +43,16 @@ def make_transaction(array: np.array, sampling_array: np.array) -> np.array:
             )
             state_tax_collected[count] += w_gov
         count += 1
+    return array, state_tax_collected
+
+
+def add_government_help(array: np.array, state_tax_collected: dict) -> np.array:
+    for state in state_tax_collected.keys():
+        array[array[:, 1] == state, 2] = government_help_by_state(
+            array[array[:, 1] == state, 2], state_tax_collected[state]
+        )
+    return array
+
+
+def migration(array: np.array) -> np.array:
     return array
