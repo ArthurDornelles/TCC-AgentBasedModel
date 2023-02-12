@@ -12,13 +12,13 @@ logger = Logger()
 
 def make_iterations(array: np.array, iterations: int) -> np.array:
     for iteration in range(iterations):
-        logger.info(f"Starting Transactions of Iteration {iteration}")
+
         array, state_tax_collected = make_transaction(array, sample(array))
-        logger.info(f"Starting Living Cost Calculation of Iteration {iteration}")
+
         array = living_cost_calculation(array)
-        logger.info(f"Starting Government Help of Iteration {iteration}")
+
         array = add_government_help(array, state_tax_collected)
-        logger.info(f"Starting Migration of Iteration {iteration}")
+
         array = migration(array)
         logger.info(f"Finished iteration {iteration+1}")
 
