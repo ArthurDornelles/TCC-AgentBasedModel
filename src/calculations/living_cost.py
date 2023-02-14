@@ -17,6 +17,5 @@ def individual_cost(state_array: np.array) -> np.array:
 
 
 def weight_function(state_array: np.array, average: float) -> np.array:
-    state_array = 0.1*average + 9.9*average*(1+np.tanh(state_array - average))/2
-
+    state_array = 0.1*average + 9.9*average*(1+np.tanh((state_array/5*average - 1)/))/2
     return state_array
