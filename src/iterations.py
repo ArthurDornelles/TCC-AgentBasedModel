@@ -12,7 +12,6 @@ logger = Logger()
 
 def make_iterations(array: np.array, iterations: int) -> np.array:
     for iteration in range(iterations):
-
         array, state_tax_collected = make_transaction(array, sample(array))
 
         array = living_cost_calculation(array)
@@ -32,6 +31,8 @@ def make_transaction(array: np.array, sampling_array: np.array) -> np.array:
     for state in sampling_array:
         state_tax_collected[count] = 0
         for index_1, index_2 in state:
+            if index_1 == index_2:
+                continue
             w_1_new, w_2_new, w_gov = perform_exchange(
                 array[array[:, 0] == index_1, 2], array[array[:, 0] == index_2, 2]
             )

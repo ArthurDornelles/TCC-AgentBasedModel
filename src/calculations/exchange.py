@@ -8,6 +8,6 @@ def perform_exchange(
     production = production_coefficient * (wealth_1 + wealth_2)
     production_tax_gov = production_tax * production
     production = production - production_tax_gov
-    new_wealth_1 = wealth_1 / (wealth_1 + wealth_2) * production
-    new_wealth_2 = wealth_2 / (wealth_1 + wealth_2) * production
+    new_wealth_1 = production / 2
+    new_wealth_2 = production / 2
     return new_wealth_1, new_wealth_2, production_tax_gov
