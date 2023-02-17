@@ -12,7 +12,8 @@ def sample(array: np.array) -> np.array:
                 np.random.choice(
                     array[array[:, 1] == state][:, 0],
                     size=array[array[:, 1] == state][:, 0].size,
-                    replace=True, p = probability_array(array, state)
+                    replace=True,
+                    p=probability_array(array, state),
                 )
                 for state in np.sort(np.unique(array[:, 1]))
             ]
@@ -30,9 +31,12 @@ def sample(array: np.array) -> np.array:
 
 
 def check_even_size_state_array(array: np.array) -> np.array:
-    array = np.array([state if len(state) % 2 == 0 else state[:-1] for state in array])
+    array = np.array(
+        [state[:-2] if len(state) % 2 == 0 else state[:-1] for state in array]
+    )
     return array
 
+
 def probability_array(array: np.array, state: int) -> np.array:
-    array = array[array[:, 1] == state][:,2]/array[array[:, 1] == state][:,2].sum()
+    array = array[array[:, 1] == state][:, 2] / array[array[:, 1] == state][:, 2].sum()
     return array

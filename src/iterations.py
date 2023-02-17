@@ -5,6 +5,7 @@ from src.calculations.exchange import perform_exchange
 from src.calculations.living_cost import living_cost_calculation
 from src.calculations.government_help import government_help_by_state
 from src.utils.Log import Logger
+from src.calculations.migration import perform_migration
 
 global logger
 logger = Logger()
@@ -18,7 +19,7 @@ def make_iterations(array: np.array, iterations: int) -> np.array:
 
         array = add_government_help(array, state_tax_collected)
 
-        array = migration(array)
+        array = perform_migration(array, state_tax_collected)
         logger.info(f"Finished iteration {iteration+1}")
 
     print(array)
@@ -52,8 +53,4 @@ def add_government_help(array: np.array, state_tax_collected: dict) -> np.array:
         array[array[:, 1] == state, 2] = government_help_by_state(
             array[array[:, 1] == state, 2], state_tax_collected[state]
         )
-    return array
-
-
-def migration(array: np.array) -> np.array:
     return array
