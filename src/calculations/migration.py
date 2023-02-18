@@ -5,11 +5,14 @@ from src.calculations.living_cost import weight_function_array_average
 
 
 def perform_migration(array: np.array, state_tax_collected: dict):
-    government_average = np.array(
-        [array[array[:, 1] == state, 2].mean() for state in range(50)]
-    )
+    government_average = {
+        int(state): array[array[:, 1] == state, 2].mean()
+        for state in np.sort(np.unique(array[:, 1]))
+    }
 
-    possible_state_array = np.random.choice(50, len(array), replace=True)
+    possible_state_array = np.random.choice(
+        np.unique(array[:, 1]), len(array), replace=True
+    )
 
     array = make_migration(
         array, possible_state_array, government_average, state_tax_collected
@@ -48,8 +51,8 @@ def make_migration(
         expected_exchange(array_c[:, 2], possible_gov_average_array),
         weight_function_array_average(array_c[:, 2], government_average_array),
         weight_function_array_average(array_c[:, 2], possible_gov_average_array),
-        np.array([government_help[int(state)] for state in array_c[:, 1]]),
-        np.array([government_help[int(state)] for state in array_c[:, 4]]),
+        np.array([float(government_help[int(state)]) for state in array_c[:, 1]]),
+        np.array([float(government_help[int(state)]) for state in array_c[:, 4]]),
     ]
     # 10, 11
     array_c = np.c_[
@@ -78,4 +81,4 @@ def choose_if_migrate(
 def calculate_migration_probability(value: float, value_new: float) -> float:
     if not value_new or value > value_new:
         return [1, 0]
-    return [1 - np.exp(-value / value_new), np.exp(-value / value_new)]
+    return [1 - np.exp(-value / (0.9 * value_new)), np.exp(-value / (0.9 * value_new))]

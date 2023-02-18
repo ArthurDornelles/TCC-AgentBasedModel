@@ -3,7 +3,10 @@ import numpy as np
 from src.calculations.sampling import sample
 from src.calculations.exchange import perform_exchange
 from src.calculations.living_cost import living_cost_calculation
-from src.calculations.government_help import government_help_by_state
+from src.calculations.government_help import (
+    government_help_by_state,
+    government_help_negative_people,
+)
 from src.utils.Log import Logger
 from src.calculations.migration import perform_migration
 
@@ -25,13 +28,12 @@ def make_iterations(array: np.array, iterations: int) -> np.array:
     print(array)
 
 
-def make_transaction(array: np.array, sampling_array: np.array) -> np.array:
+def make_transaction(array: np.array, sampling_array: dict[np.array]) -> np.array:
     """ """
-    count = 0
     state_tax_collected = {}
-    for state in sampling_array:
-        state_tax_collected[count] = 0
-        for index_1, index_2 in state:
+    for state_key, state_array in sampling_array.items():
+        state_tax_collected[state_key] = 0
+        for index_1, index_2 in state_array:
             if index_1 == index_2:
                 continue
             w_1_new, w_2_new, w_gov = perform_exchange(
@@ -43,13 +45,19 @@ def make_transaction(array: np.array, sampling_array: np.array) -> np.array:
             array[array[:, 0] == index_2, 2] = (
                 array[array[:, 0] == index_2, 2] + w_2_new
             )
-            state_tax_collected[count] += w_gov
-        count += 1
+            state_tax_collected[state_key] += w_gov
     return array, state_tax_collected
 
 
 def add_government_help(array: np.array, state_tax_collected: dict) -> np.array:
     for state in state_tax_collected.keys():
+        (
+            array[(array[:, 1] == state) & (array[:, 2] < 0), 2],
+            state_tax_collected[state],
+        ) = government_help_negative_people(
+            array[(array[:, 1] == state) & (array[:, 2] < 0), 2],
+            state_tax_collected[state],
+        )
         array[array[:, 1] == state, 2] = government_help_by_state(
             array[array[:, 1] == state, 2], state_tax_collected[state]
         )
