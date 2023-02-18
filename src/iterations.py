@@ -1,5 +1,6 @@
 import numpy as np
 
+from src.analysis.statistics import get_iteration_statistics
 from src.calculations.sampling import sample
 from src.calculations.exchange import perform_exchange
 from src.calculations.living_cost import living_cost_calculation
@@ -7,6 +8,7 @@ from src.calculations.government_help import (
     government_help_by_state,
     government_help_negative_people,
 )
+from src.connections.insert import save_df_to_db
 from src.utils.Log import Logger
 from src.calculations.migration import perform_migration
 
@@ -14,7 +16,7 @@ global logger
 logger = Logger()
 
 
-def make_iterations(array: np.array, iterations: int) -> np.array:
+def make_iterations(array: np.array, iterations: int, table_name: str) -> np.array:
     for iteration in range(iterations):
         array, state_tax_collected = make_transaction(array, sample(array))
 
@@ -23,6 +25,11 @@ def make_iterations(array: np.array, iterations: int) -> np.array:
         array = add_government_help(array, state_tax_collected)
 
         array = perform_migration(array, state_tax_collected)
+
+        df_analysis = get_iteration_statistics(array, state_tax_collected, iteration)
+
+        save_df_to_db(df_analysis, table_name)
+
         logger.info(f"Finished iteration {iteration+1}")
 
     print(array)

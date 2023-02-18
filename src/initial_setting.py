@@ -1,10 +1,13 @@
 import numpy as np
 
+from src.connections.insert import save_config_to_db
+
 
 def set_initial_array(
-    number_of_states: int, number_of_people_by_state: int
+    number_of_states: int, number_of_people_by_state: int, config_table_name: str
 ) -> np.array:
     """ """
+    save_config_to_db(config_table_name)
     total_people = number_of_states * number_of_people_by_state
     initial_wealth = 100
     wealth = np.random.normal(
