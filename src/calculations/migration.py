@@ -46,8 +46,8 @@ def make_migration(
         possible_state_array,
     ]
     exchange_probability_array = {
-        state: (array_c[array_c[:, 1] == state] ** exchange_fuzzy_probability).sum()
-        * array_c[array_c[:, 1] == state].size
+        state: (array_c[array_c[:, 1] == state, 2] ** exchange_fuzzy_probability).sum()
+        * array_c[array_c[:, 1] == state, 1].size
         for state in np.unique(array_c[:, 1])
     }
     # 5, 6
