@@ -3,7 +3,7 @@ import numpy as np
 from src.calculations.exchange import expected_exchange
 from src.calculations.living_cost import weight_function_array_average
 
-from config import migration_coefficient
+from config import migration_coefficient, exchange_fuzzy_coefficient
 
 
 def perform_migration(array: np.array, state_tax_collected: dict):
@@ -29,9 +29,11 @@ def make_migration(
     government_average: np.array,
     government_help: dict,
 ):
-    # 0-index, 1-state, 2-wealth,3-exchange, 4-possible_state,5-possible_exchange
-    # 6-cost, 7-possible_cost, 8-government_help, 9-expected_government_help
-    # 10 - gain, 11-possible_gain
+    # 0-index, 1-state, 2-wealth,3-exchange, 4-possible_state,
+    # 5- exchange_probability, 6-possible_exchange_probability
+    # 7-possible_exchange 8-cost, 9-possible_cost, 10-government_help,
+    #  11-expected_government_help,  12 - gain, 13-possible_gain
+
     # adds possible_state_array
     array_c = np.array(array, copy=True)
     government_average_array = np.array(
@@ -43,28 +45,46 @@ def make_migration(
         expected_exchange(array_c[:, 2], government_average_array),
         possible_state_array,
     ]
-
+    exchange_probability_array = {
+        state: (array_c[array_c[:, 1] == state] ** (exchange_fuzzy_coefficient)).sum()
+        * array_c[array_c[:, 1] == state].size
+        for state in np.unique(array_c[:, 1])
+    }
+    # 5, 6
+    array_c = np.c_[
+        array_c,
+        np.array(
+            [float(exchange_probability_array[int(state)]) for state in array_c[:, 1]]
+        ),
+        np.array(
+            [float(exchange_probability_array[int(state)]) for state in array_c[:, 4]]
+        ),
+    ]
     possible_gov_average_array = np.array(
         [government_average[int(state)] for state in array_c[:, 4]]
     )
-    # 5, 6, 7, 8, 9
+    # 7, 8, 9, 10, 11
     array_c = np.c_[
         array_c,
         expected_exchange(array_c[:, 2], possible_gov_average_array),
-        weight_function_array_average(array_c[:, 2], government_average_array),
-        weight_function_array_average(array_c[:, 2], possible_gov_average_array),
+        weight_function_array_average(
+            array_c[:, 2], government_average_array, array_c[:, 5]
+        ),
+        weight_function_array_average(
+            array_c[:, 2], possible_gov_average_array, array_c[:, 6]
+        ),
         np.array([float(government_help[int(state)]) for state in array_c[:, 1]]),
         np.array([float(government_help[int(state)]) for state in array_c[:, 4]]),
     ]
-    # 10, 11
+    # 12, 13
     array_c = np.c_[
         array_c,
-        array_c[:, 3] - array_c[:, 6] + array_c[:, 8],
-        array_c[:, 5] - array_c[:, 7] + array_c[:, 9],
+        array_c[:, 3] - array_c[:, 8] + array_c[:, 10],
+        array_c[:, 7] - array_c[:, 9] + array_c[:, 11],
     ]
     choose_if_migrate_v = np.vectorize(choose_if_migrate)
     array[:, 1] = choose_if_migrate_v(
-        array_c[:, 10], array_c[:, 11], array_c[:, 1], array_c[:, 4]
+        array_c[:, 12], array_c[:, 13], array_c[:, 1], array_c[:, 4]
     )
     return array
 

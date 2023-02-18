@@ -1,5 +1,7 @@
 import numpy as np
 
+from config import exchange_fuzzy_coefficient, phi
+
 
 def living_cost_calculation(array: np.array) -> np.array:
     for state in np.sort(np.unique(array[:, 1])):
@@ -18,15 +20,25 @@ def individual_cost(state_array: np.array) -> np.array:
 
 def weight_function(state_array: np.array, average: float) -> np.array:
     state_array = (
-        0.1 * average
-        + 9.9 * average * (1 + np.tanh((state_array - 5 * average) / (3 * average))) / 2
+        0.2 * average
+        + 4.9
+        * average
+        * (1 + np.tanh((state_array - 2.5 * average) / (phi * average)))
+        / 2
     ) * 0.2
     return state_array
 
 
-def weight_function_array_average(state_array: np.array, average: np.array) -> np.array:
+def weight_function_array_average(
+    state_array: np.array, average: np.array, probability_array: np.array
+) -> np.array:
     array = (
-        0.1 * average
-        + 9.9 * average * (1 + np.tanh((state_array - 5 * average) / (3 * average))) / 2
+        0.2 * average
+        + 4.9
+        * average
+        * (1 + np.tanh((state_array - 2.5 * average) / (phi * average)))
+        / 2
     ) * 0.2
+    array_probability = array ** (exchange_fuzzy_coefficient)
+    array = array * array_probability / (array_probability + probability_array)
     return array

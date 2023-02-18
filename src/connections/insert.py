@@ -8,6 +8,7 @@ from config import (
     production_coefficient,
     migration_coefficient,
     exchange_fuzzy_coefficient,
+    phi,
 )
 from src.connections.connections import DatabaseConnection
 
@@ -31,6 +32,7 @@ def save_config_to_db(config_table_name: str) -> None:
             ["production_coefficient", production_coefficient],
             ["migration_coefficient", migration_coefficient],
             ["exchange_fuzzy_coefficient", exchange_fuzzy_coefficient],
+            ["phi", phi],
         ],
         columns=["Property", "Value"],
     )
