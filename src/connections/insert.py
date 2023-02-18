@@ -6,6 +6,8 @@ from config import (
     iterations,
     production_tax,
     production_coefficient,
+    migration_coefficient,
+    exchange_fuzzy_coefficient,
 )
 from src.connections.connections import DatabaseConnection
 
@@ -27,6 +29,8 @@ def save_config_to_db(config_table_name: str) -> None:
             ["iterations", iterations],
             ["production_tax", production_tax],
             ["production_coefficient", production_coefficient],
+            ["migration_coefficient", migration_coefficient],
+            ["exchange_fuzzy_coefficient", exchange_fuzzy_coefficient],
         ],
         columns=["Property", "Value"],
     )

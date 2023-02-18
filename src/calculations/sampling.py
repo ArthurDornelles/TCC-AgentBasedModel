@@ -1,5 +1,7 @@
 import numpy as np
 
+from config import exchange_fuzzy_coefficient
+
 
 def sample(array: np.array) -> np.array:
     """Returns a random order of the index for transaction
@@ -37,9 +39,6 @@ def check_even_size_state_array(array: dict[np.array]) -> dict:
 
 
 def probability_array(array: np.array, state: int) -> np.array:
-    sqrt_array = array[array[:, 1] == state][:, 2] ** (0.25)
-    # probability_array = sqrt_array / sqrt_array.sum()
-    # return probability_array
-
-    sqrt_array[:] = 1 / sqrt_array.size
-    return sqrt_array
+    sqrt_array = array[array[:, 1] == state][:, 2] ** (exchange_fuzzy_coefficient)
+    probability_array = sqrt_array / sqrt_array.sum()
+    return probability_array

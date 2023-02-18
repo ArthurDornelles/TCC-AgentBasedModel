@@ -3,6 +3,8 @@ import numpy as np
 from src.calculations.exchange import expected_exchange
 from src.calculations.living_cost import weight_function_array_average
 
+from config import migration_coefficient
+
 
 def perform_migration(array: np.array, state_tax_collected: dict):
     government_average = {
@@ -81,4 +83,7 @@ def choose_if_migrate(
 def calculate_migration_probability(value: float, value_new: float) -> float:
     if not value_new or value > value_new:
         return [1, 0]
-    return [1 - np.exp(-value / (0.9 * value_new)), np.exp(-value / (0.9 * value_new))]
+    return [
+        1 - np.exp(-value / (migration_coefficient * value_new)),
+        np.exp(-value / (migration_coefficient * value_new)),
+    ]
