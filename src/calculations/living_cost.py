@@ -1,6 +1,6 @@
 import numpy as np
 
-from config import exchange_fuzzy_coefficient, phi
+from config import exchange_fuzzy_probability, phi
 
 
 def living_cost_calculation(array: np.array) -> np.array:
@@ -39,6 +39,6 @@ def weight_function_array_average(
         * (1 + np.tanh((state_array - 2.5 * average) / (phi * average)))
         / 2
     ) * 0.2
-    array_probability = array ** (exchange_fuzzy_coefficient)
+    array_probability = array**exchange_fuzzy_probability
     array = array * array_probability / (array_probability + probability_array)
     return array

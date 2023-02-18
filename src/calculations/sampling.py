@@ -1,6 +1,6 @@
 import numpy as np
 
-from config import exchange_fuzzy_coefficient
+from config import exchange_fuzzy_probability
 
 
 def sample(array: np.array) -> np.array:
@@ -39,6 +39,6 @@ def check_even_size_state_array(array: dict[np.array]) -> dict:
 
 
 def probability_array(array: np.array, state: int) -> np.array:
-    sqrt_array = array[array[:, 1] == state][:, 2] ** (exchange_fuzzy_coefficient)
+    sqrt_array = array[array[:, 1] == state][:, 2] ** exchange_fuzzy_probability
     probability_array = sqrt_array / sqrt_array.sum()
     return probability_array

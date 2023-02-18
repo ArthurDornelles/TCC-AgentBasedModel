@@ -3,7 +3,7 @@ import numpy as np
 from src.calculations.exchange import expected_exchange
 from src.calculations.living_cost import weight_function_array_average
 
-from config import migration_coefficient, exchange_fuzzy_coefficient
+from config import migration_coefficient, exchange_fuzzy_probability
 
 
 def perform_migration(array: np.array, state_tax_collected: dict):
@@ -46,7 +46,7 @@ def make_migration(
         possible_state_array,
     ]
     exchange_probability_array = {
-        state: (array_c[array_c[:, 1] == state] ** (exchange_fuzzy_coefficient)).sum()
+        state: (array_c[array_c[:, 1] == state] ** exchange_fuzzy_probability).sum()
         * array_c[array_c[:, 1] == state].size
         for state in np.unique(array_c[:, 1])
     }
