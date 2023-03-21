@@ -44,21 +44,6 @@ def sample(array: np.array) -> np.array:
     return sampling_array
 
 
-def sampling_from_state(state: int, state_array: np.array) -> list[int, int]:
-    array = np.array(
-        [
-            state,
-            *np.random.choice(
-                state_array[:, 0],
-                size=2,
-                replace=False,
-                p=probability_array(state_array),
-            ),
-        ]
-    )
-    return array
-
-
 def probability_array(array: np.array) -> np.array:
     sqrt_array = array[:, 2] ** exchange_fuzzy_probability
     probability_array = sqrt_array / sqrt_array.sum()
