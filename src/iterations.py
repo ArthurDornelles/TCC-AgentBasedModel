@@ -18,15 +18,21 @@ logger = Logger()
 
 def make_iterations(array: np.array, iterations: int, table_name: str) -> np.array:
     for iteration in range(iterations):
+        logger.info(f"Finished setting, starting iteration {iteration+1}")
         array, state_tax_collected = make_transaction(array, sample(array))
 
+        logger.info(f"Finished transaction, starting living cost ")
         array = living_cost_calculation(array)
 
+        logger.info(f"Finished living cost, starting government help ")
         array = add_government_help(array, state_tax_collected)
+        logger.info(f"Finished government help, starting migration ")
 
         array = perform_migration(array, state_tax_collected)
+        logger.info(f"Finished migration, starting analysis")
 
         df_analysis = get_iteration_statistics(array, state_tax_collected, iteration)
+        logger.info(f"Saving analysis")
 
         save_df_to_db(df_analysis, table_name)
 
