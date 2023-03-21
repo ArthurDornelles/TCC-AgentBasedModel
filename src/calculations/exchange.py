@@ -7,10 +7,7 @@ def perform_exchange(
     wealth_1: float,
     wealth_2: float,
 ):
-    if wealth_1 <= 0 and wealth_2 <= 0:
-        return 0, 0, 0
-    production_tax_gov = production_tax * production_value
-    production = production_value - production_tax_gov
+    production = production_value * (1 - production_tax)
     total_fuzzy = (
         wealth_1**exchange_fuzzy_probability + wealth_2**exchange_fuzzy_probability
     )
@@ -25,7 +22,7 @@ def perform_exchange(
         else wealth_2
     )
 
-    return new_wealth_1, new_wealth_2, production_tax_gov
+    return new_wealth_1, new_wealth_2
 
 
 def expected_exchange(

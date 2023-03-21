@@ -1,6 +1,10 @@
 import numpy as np
 
 from config import exchange_fuzzy_probability
+from src.utils.Log import Logger
+
+global logger
+logger = Logger()
 
 
 def sample(array: np.array) -> np.array:
@@ -8,42 +12,51 @@ def sample(array: np.array) -> np.array:
     - each row is a state and each pair of columns is a combination
     array[1,0:2] is a combination
     """
+    logger.info("starting sampling 1")
     sampling_array = np.array(
         [
             np.random.choice(
-                array[:, 0],
+                array[:, 1],
                 size=int(array[:, 0].size / 2),
                 replace=True,
                 p=probability_array(array),
             )
         ]
     )
+    logger.info("starting sampling 2")
     sampling_array = np.array(
         [
             np.array(
                 [
-                    agent,
-                    np.random.choice(
-                        array[
-                            (array[:, 1] == array[array[:, 0] == agent][:, 1])
-                            & ~(array[:, 0] == agent)
-                        ][:, 0],
-                        size=1,
-                        replace=True,
-                        p=probability_array(
-                            array[
-                                (array[:, 1] == array[array[:, 0] == agent][:, 1])
-                                & ~(array[:, 0] == agent)
-                            ]
-                        ),
-                    )[0],
+                    state,
+                    *np.random.choice(
+                        array[array[:, 1] == state][:, 0],
+                        size=2,
+                        replace=False,
+                        p=probability_array(array[array[:, 1] == state]),
+                    ),
                 ]
             )
-            for agent in sampling_array[0]
+            for state in sampling_array[0]
         ]
     )
 
     return sampling_array
+
+
+def sampling_from_state(state: int, state_array: np.array) -> list[int, int]:
+    array = np.array(
+        [
+            state,
+            *np.random.choice(
+                state_array[:, 0],
+                size=2,
+                replace=False,
+                p=probability_array(state_array),
+            ),
+        ]
+    )
+    return array
 
 
 def probability_array(array: np.array) -> np.array:

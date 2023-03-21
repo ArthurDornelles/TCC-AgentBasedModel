@@ -8,6 +8,7 @@ from src.calculations.government_help import (
     government_help_by_state,
     government_help_negative_people,
 )
+from config import production_tax, production_value
 from src.connections.insert import save_df_to_db
 from src.utils.Log import Logger
 from src.calculations.migration import perform_migration
@@ -43,18 +44,18 @@ def make_iterations(array: np.array, iterations: int, table_name: str) -> np.arr
 
 def make_transaction(array: np.array, sampling_array: np.array) -> np.array:
     """ """
-    state_tax_collected = {int(state): 0 for state in np.unique(array[:, 1])}
-
-    for index_1, index_2 in sampling_array:
-        state = array[array[:, 0] == index_1][:, 1]
-        if index_1 == index_2:
-            continue
-        w_1_new, w_2_new, w_gov = perform_exchange(
+    state_tax_collected = {
+        int(state): sampling_array[sampling_array[:, 2] == state, 2].size
+        * (production_value * production_tax)
+        for state in np.unique(array[:, 1])
+    }
+    logger.info("start transaction iteration")
+    for index_1, index_2, _ in sampling_array:
+        w_1_new, w_2_new = perform_exchange(
             array[array[:, 0] == index_1, 2], array[array[:, 0] == index_2, 2]
         )
         array[array[:, 0] == index_1, 2] = array[array[:, 0] == index_1, 2] + w_1_new
         array[array[:, 0] == index_2, 2] = array[array[:, 0] == index_2, 2] + w_2_new
-        state_tax_collected[int(state)] += w_gov
     return array, state_tax_collected
 
 
