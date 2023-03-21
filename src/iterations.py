@@ -35,24 +35,20 @@ def make_iterations(array: np.array, iterations: int, table_name: str) -> np.arr
     print(array)
 
 
-def make_transaction(array: np.array, sampling_array: dict[np.array]) -> np.array:
+def make_transaction(array: np.array, sampling_array: np.array) -> np.array:
     """ """
-    state_tax_collected = {}
-    for state_key, state_array in sampling_array.items():
-        state_tax_collected[state_key] = 0
-        for index_1, index_2 in state_array:
-            if index_1 == index_2:
-                continue
-            w_1_new, w_2_new, w_gov = perform_exchange(
-                array[array[:, 0] == index_1, 2], array[array[:, 0] == index_2, 2]
-            )
-            array[array[:, 0] == index_1, 2] = (
-                array[array[:, 0] == index_1, 2] + w_1_new
-            )
-            array[array[:, 0] == index_2, 2] = (
-                array[array[:, 0] == index_2, 2] + w_2_new
-            )
-            state_tax_collected[state_key] += w_gov
+    state_tax_collected = {int(state): 0 for state in np.unique(array[:, 1])}
+
+    for index_1, index_2 in sampling_array:
+        state = array[array[:, 0] == index_1][:, 1]
+        if index_1 == index_2:
+            continue
+        w_1_new, w_2_new, w_gov = perform_exchange(
+            array[array[:, 0] == index_1, 2], array[array[:, 0] == index_2, 2]
+        )
+        array[array[:, 0] == index_1, 2] = array[array[:, 0] == index_1, 2] + w_1_new
+        array[array[:, 0] == index_2, 2] = array[array[:, 0] == index_2, 2] + w_2_new
+        state_tax_collected[int(state)] += w_gov
     return array, state_tax_collected
 
 
