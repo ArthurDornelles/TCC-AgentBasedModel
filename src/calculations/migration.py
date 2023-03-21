@@ -100,10 +100,7 @@ def make_migration(
         array_c[:, 6] - array_c[:, 8] + array_c[:, 10],
         array_c[:, 7] - array_c[:, 9] + array_c[:, 11],
     ]
-    if len(array_c[np.isnan(array_c[:, 12]), :]) or len(
-        array_c[np.isnan(array_c[:, 13]), :]
-    ):
-        print("help, fuck!")
+
     choose_if_migrate_v = np.vectorize(choose_if_migrate)
     array[:, 1] = choose_if_migrate_v(
         array_c[:, 12], array_c[:, 13], array_c[:, 1], array_c[:, 3]
