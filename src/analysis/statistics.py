@@ -20,7 +20,7 @@ def get_iteration_statistics(
                 "Std Dev Wealth": array[array[:, 1] == state, 2].std(),
                 "Max Wealth": array[array[:, 1] == state, 2].max(),
                 "Min Wealth": array[array[:, 1] == state, 2].min(),
-                "State Tax Collection": state_tax_collection[int(state)][0],
+                "State Tax Collection": state_tax_collection[int(state)],
             }
             for state in np.sort(np.unique(array[:, 1]))
         ],

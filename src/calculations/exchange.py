@@ -1,6 +1,6 @@
 import numpy as np
 
-from config import production_tax, production_coefficient, exchange_fuzzy_probability
+from config import production_tax, production_value, exchange_fuzzy_probability
 
 
 def perform_exchange(
@@ -9,9 +9,8 @@ def perform_exchange(
 ):
     if wealth_1 <= 0 and wealth_2 <= 0:
         return 0, 0, 0
-    production = production_coefficient * (wealth_1 + wealth_2)
-    production_tax_gov = production_tax * production
-    production = production - production_tax_gov
+    production_tax_gov = production_tax * production_value
+    production = production_value - production_tax_gov
     total_fuzzy = (
         wealth_1**exchange_fuzzy_probability + wealth_2**exchange_fuzzy_probability
     )
@@ -36,7 +35,7 @@ def expected_exchange(
     people_by_state_array: np.array,
 ) -> np.array:
     # calculate production
-    production = production_coefficient * (wealth_1 + state_avg_wealth)
+    production = production_value * (wealth_1 + state_avg_wealth)
     # takes out gov part
     production_tax_gov = production_tax * production
     production = production - production_tax_gov
