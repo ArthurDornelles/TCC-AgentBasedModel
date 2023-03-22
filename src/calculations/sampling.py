@@ -1,10 +1,6 @@
 import numpy as np
 
 from config import exchange_fuzzy_probability
-from src.utils.Log import Logger
-
-global logger
-logger = Logger()
 
 
 def sample(array: np.array) -> np.array:
@@ -12,7 +8,6 @@ def sample(array: np.array) -> np.array:
     - each row is a state and each pair of columns is a combination
     array[1,0:2] is a combination
     """
-    logger.info("starting sampling 1")
     sampling_array = np.array(
         [
             np.random.choice(
@@ -23,7 +18,6 @@ def sample(array: np.array) -> np.array:
             )
         ]
     )
-    logger.info("starting sampling 2")
     sampling_array = np.array(
         [
             np.array(
