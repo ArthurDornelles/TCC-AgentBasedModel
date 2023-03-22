@@ -5,8 +5,7 @@ from config import exchange_fuzzy_probability
 
 def sample(array: np.array) -> np.array:
     """Returns a random order of the index for transaction
-    - each row is a state and each pair of columns is a combination
-    array[1,0:2] is a combination
+    - each line contains the state of transaction, agent_1 and agent_2.
     """
     sampling_array = np.array(
         [
@@ -22,16 +21,16 @@ def sample(array: np.array) -> np.array:
         [
             np.array(
                 [
-                    state,
+                    agent_state,
                     *np.random.choice(
-                        array[array[:, 1] == state][:, 0],
+                        array[array[:, 1] == agent_state][:, 0],
                         size=2,
                         replace=False,
-                        p=probability_array(array[array[:, 1] == state]),
+                        p=probability_array(array[array[:, 1] == agent_state]),
                     ),
                 ]
             )
-            for state in sampling_array[0]
+            for agent_state in sampling_array[0]
         ]
     )
 
