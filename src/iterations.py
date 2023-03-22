@@ -45,12 +45,12 @@ def make_iterations(array: np.array, iterations: int, table_name: str) -> np.arr
 def make_transaction(array: np.array, sampling_array: np.array) -> np.array:
     """ """
     state_tax_collected = {
-        int(state): sampling_array[sampling_array[:, 2] == state, 2].size
+        int(state): sampling_array[sampling_array[:, 0] == state, 0].size
         * (production_value * production_tax)
         for state in np.unique(array[:, 1])
     }
     logger.info("start transaction iteration")
-    for index_1, index_2, _ in sampling_array:
+    for _, index_1, index_2 in sampling_array:
         w_1_new, w_2_new = perform_exchange(
             array[array[:, 0] == index_1, 2], array[array[:, 0] == index_2, 2]
         )
