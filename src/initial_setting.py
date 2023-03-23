@@ -22,3 +22,8 @@ def set_initial_array(
         ]
     )
     return array
+
+
+def set_states_tax_collection(number_of_states: int):
+    state_tax_collected = {int(state): 0 for state in range(number_of_states)}
+    return state_tax_collected

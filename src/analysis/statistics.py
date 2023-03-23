@@ -5,10 +5,6 @@ import numpy as np
 def get_iteration_statistics(
     array: np.array, state_tax_collection: dict, iteration: int
 ) -> pd.DataFrame:
-    state_tax_collection = {
-        state: state_array if state_array != 0 else [0]
-        for state, state_array in state_tax_collection.items()
-    }
     df = pd.DataFrame(
         [
             {
