@@ -1,11 +1,11 @@
 iterations = 250
-iterations_to_migration = 1
+iterations_to_migration = 5
 number_of_states = 50
 total_people = 1000
 production_tax = 0.20
-production_value = 0.1
+production_value = 1
 migration_coefficient = 0.5
 exchange_fuzzy_probability = 0.5
 exchange_fuzzy_coefficient = 0.5
 phi = 2.5
-pop_density_coefficient = 2
+pop_density_coefficient = 1

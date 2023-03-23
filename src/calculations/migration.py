@@ -26,7 +26,6 @@ def make_migration(
     state_avg_dict: dict,
     state_help_dict: dict,
 ):
-
     # 0-index, 1-state, 2-wealth, 3-new_state, 4-state_samp_probability
     # 5-new_state_samp_probability, 6-expected_exchange, 7-new_expected_exchange
     # 8-state_cost, 9-new_state_cost, 10-state_help, 11-new_state_help
