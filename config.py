@@ -1,5 +1,5 @@
 iterations = 250
-iterations_to_migration = 3
+iterations_to_migration = 1
 number_of_states = 50
 total_people = 1000
 production_tax = 0.20

@@ -1,5 +1,5 @@
-from config import number_of_states, total_people, iterations, production_tax
-from src.initial_setting import set_initial_array
+from config import number_of_states, total_people, iterations
+from src.initial_setting import set_initial_array, set_states_tax_collection
 from src.utils.Log import Logger, TableNames
 from src.iterations import make_iterations
 
@@ -15,7 +15,10 @@ def main() -> None:
     array = set_initial_array(
         number_of_states, total_people, table_names.config_table_name
     )
-    array = make_iterations(array, iterations, table_names.table_name)
+    state_tax_collected = set_states_tax_collection(number_of_states)
+    array = make_iterations(
+        array, iterations, table_names.table_name, state_tax_collected
+    )
     logger.info(f"Finished all {iterations} iterations")
 
 
