@@ -20,16 +20,9 @@ def individual_cost(state_array: np.array) -> np.array:
 
 def weight_function(state_array: np.array, average: float) -> np.array:
     state_array = (
-        (
-            0.2 * average
-            + 4.9
-            * average
-            * (1 + np.tanh((state_array - 2.5 * average) / (phi * average)))
-            / 2
-        )
-        * state_array.size
-        * pop_density_coefficient
-        / (total_people * number_of_states)
+        0.8 * average + 2 * average * np.tanh(state_array / average - 1) / 2
+    ) * np.exp(
+        pop_density_coefficient * (state_array.size) / (total_people * number_of_states)
     )
     return state_array
 
