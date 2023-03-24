@@ -25,28 +25,3 @@ def weight_function(state_array: np.array, average: float) -> np.array:
         pop_density_coefficient * (state_array.size) / (total_people * number_of_states)
     )
     return state_array
-
-
-def weight_function_array_average(
-    wealth_array: np.array,
-    state_avg_array: np.array,
-    people_by_state_array: np.array,
-) -> np.array:
-    array = (
-        (
-            0.2 * state_avg_array
-            + 4.9
-            * state_avg_array
-            * (
-                1
-                + np.tanh(
-                    (wealth_array - 2.5 * state_avg_array) / (phi * state_avg_array)
-                )
-            )
-            / 2
-        )
-        * people_by_state_array
-        * pop_density_coefficient
-        / (total_people * number_of_states)
-    )
-    return array
