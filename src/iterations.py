@@ -54,5 +54,3 @@ def make_iterations(
 
         save_df_to_db(df_analysis, table.iter_table_name)
         logger.info(f"Finished iteration {iteration+1}")
-
-    print(array)
