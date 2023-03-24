@@ -17,7 +17,13 @@ def set_initial_array(
     )
     array = np.array(
         [
-            [index, index // number_of_people_by_state, np.around(wealth, 0)]
+            [
+                index,
+                index // number_of_people_by_state,
+                np.around(wealth, 0),
+                index // number_of_people_by_state,
+                np.around(wealth, 0),
+            ]
             for index, wealth in zip(range(total_people), wealth)
         ]
     )

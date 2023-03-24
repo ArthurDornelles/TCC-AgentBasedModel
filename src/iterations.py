@@ -35,15 +35,18 @@ def make_iterations(
         )
         logging_tax = state_tax_collected.copy()
         if not ((iteration + 1) % iterations_to_migration):
-            logger.info(f"Finished transaction, starting living cost ")
+            logger.info(f"Finished transaction, starting living cost")
             array = living_cost_calculation(array)
 
-            logger.info(f"Finished living cost, starting government help ")
+            logger.info(f"Finished living cost, starting government help")
             array, state_tax_collected = add_government_help(array, state_tax_collected)
-            logger.info(f"Finished government help, starting migration ")
+            logger.info(f"Finished government help, starting migration")
 
             array = perform_migration(array, state_tax_collected)
             logger.info(f"Finished migration, starting analysis")
+
+            # remembers this wealth for next migration
+            array[:, 3:5] = array[:, 1:3]
 
         df_analysis = get_iteration_statistics(array, logging_tax, iteration)
         logger.info(f"Saving analysis")
