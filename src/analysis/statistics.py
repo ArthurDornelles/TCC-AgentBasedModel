@@ -22,3 +22,12 @@ def get_iteration_statistics(
         ],
     )
     return df
+
+
+def get_iteration_flux_statistics(array: np.array, iteration: int) -> pd.DataFrame:
+    array = array[~(array[:, 1] == array[:, 3])][:, [1, 3]]
+    df = pd.DataFrame(array, columns=["origin", "destination"])
+    df["iteration"] = iteration
+    df["count"] = 1
+    df = df.groupby(by=["origin", "destination", "iteration"]).sum()
+    return df

@@ -15,5 +15,6 @@ class Logger:
 class TableNames:
     def __init__(self):
         now = datetime.datetime.now().strftime("%Y/%m/%d-%H:%M")
-        self.table_name = now + "_iter"
+        self.iter_table_name = now + "_iter"
         self.config_table_name = now + "_config"
+        self.flux_table_name = now + "_flux"

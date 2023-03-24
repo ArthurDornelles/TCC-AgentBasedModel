@@ -16,9 +16,7 @@ def main() -> None:
         number_of_states, total_people, table_names.config_table_name
     )
     state_tax_collected = set_states_tax_collection(number_of_states)
-    array = make_iterations(
-        array, iterations, table_names.table_name, state_tax_collected
-    )
+    array = make_iterations(array, iterations, table_names, state_tax_collected)
     logger.info(f"Finished all {iterations} iterations")
 
 
