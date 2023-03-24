@@ -1,6 +1,6 @@
 import numpy as np
 
-from config import exchange_fuzzy_probability, phi
+from config import phi, number_of_states, total_people, pop_density_coefficient
 
 
 def living_cost_calculation(array: np.array) -> np.array:
@@ -20,25 +20,33 @@ def individual_cost(state_array: np.array) -> np.array:
 
 def weight_function(state_array: np.array, average: float) -> np.array:
     state_array = (
-        0.2 * average
-        + 4.9
-        * average
-        * (1 + np.tanh((state_array - 2.5 * average) / (phi * average)))
-        / 2
-    ) * 0.2
+        0.8 * average + 2 * average * np.tanh(state_array / average - 1) / 2
+    ) * np.exp(
+        pop_density_coefficient * (state_array.size) / (total_people * number_of_states)
+    )
     return state_array
 
 
 def weight_function_array_average(
-    state_array: np.array, average: np.array, probability_array: np.array
+    wealth_array: np.array,
+    state_avg_array: np.array,
+    people_by_state_array: np.array,
 ) -> np.array:
     array = (
-        0.2 * average
-        + 4.9
-        * average
-        * (1 + np.tanh((state_array - 2.5 * average) / (phi * average)))
-        / 2
-    ) * 0.2
-    array_probability = array**exchange_fuzzy_probability
-    array = array * array_probability / (array_probability + probability_array)
+        (
+            0.2 * state_avg_array
+            + 4.9
+            * state_avg_array
+            * (
+                1
+                + np.tanh(
+                    (wealth_array - 2.5 * state_avg_array) / (phi * state_avg_array)
+                )
+            )
+            / 2
+        )
+        * people_by_state_array
+        * pop_density_coefficient
+        / (total_people * number_of_states)
+    )
     return array

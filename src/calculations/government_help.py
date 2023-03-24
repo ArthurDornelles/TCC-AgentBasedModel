@@ -12,8 +12,11 @@ def government_help_by_state(
 def government_help_negative_people(
     array: np.array, state_total_collection: float
 ) -> np.array:
+    """Input array is given by"""
     if array.sum() < -state_total_collection:
-        raise ("Government can't keep up!")
+        array[:] = 0.01
+        return array, 0
+
     else:
         state_total_collection += float(array.sum())
         array[:] = 0

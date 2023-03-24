@@ -17,8 +17,19 @@ def set_initial_array(
     )
     array = np.array(
         [
-            [index, index // number_of_people_by_state, np.around(wealth, 0)]
+            [
+                index,
+                index // number_of_people_by_state,
+                np.around(wealth, 0),
+                index // number_of_people_by_state,
+                np.around(wealth, 0),
+            ]
             for index, wealth in zip(range(total_people), wealth)
         ]
     )
     return array
+
+
+def set_states_tax_collection(number_of_states: int):
+    state_tax_collected = {int(state): 0 for state in range(number_of_states)}
+    return state_tax_collected

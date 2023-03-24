@@ -5,11 +5,12 @@ from config import (
     total_people,
     iterations,
     production_tax,
-    production_coefficient,
+    production_value,
     migration_coefficient,
     exchange_fuzzy_probability,
     exchange_fuzzy_probability,
     phi,
+    pop_density_coefficient,
 )
 from src.connections.connections import DatabaseConnection
 
@@ -30,11 +31,12 @@ def save_config_to_db(config_table_name: str) -> None:
             ["total_people", total_people],
             ["iterations", iterations],
             ["production_tax", production_tax],
-            ["production_coefficient", production_coefficient],
+            ["production_value", production_value],
             ["migration_coefficient", migration_coefficient],
             ["exchange_fuzzy_probability", exchange_fuzzy_probability],
             ["exchange_fuzzy_coefficient", exchange_fuzzy_probability],
             ["phi", phi],
+            ["pop_density_coefficient", pop_density_coefficient],
         ],
         columns=["Property", "Value"],
     )
