@@ -1,12 +1,58 @@
 import numpy as np
+import pandas as pd
 
 from config import production_tax, production_value, exchange_fuzzy_probability
+
+
+def make_transaction(
+    array: np.array, sampling_array: np.array, state_tax_collected: dict
+) -> np.array:
+    """ """
+    state_tax_collected = {
+        int(state): state_tax_collected[state]
+        + sampling_array[sampling_array[:, 0] == state, 0].size
+        * (production_value * production_tax)
+        for state in np.unique(array[:, 1])
+    }
+    sampling_array = np.c_[
+        sampling_array,
+        np.array([array[array[:, 0] == agent][0][2] for agent in sampling_array[:, 1]]),
+        np.array([array[array[:, 0] == agent][0][2] for agent in sampling_array[:, 2]]),
+    ]
+    perform_exchange_v = np.vectorize(perform_exchange)
+    sampling_array = np.c_[
+        sampling_array,
+        perform_exchange_v(sampling_array[:, 3], sampling_array[:, 4]),
+        perform_exchange_v(sampling_array[:, 4], sampling_array[:, 3]),
+    ]
+    df = (
+        (
+            pd.DataFrame(
+                np.append(
+                    np.append(
+                        sampling_array[:, [1, 5]], sampling_array[:, [2, 6]], axis=0
+                    ),
+                    np.c_[array[:, 0], np.zeros(array[:, 0].size)],
+                    axis=0,
+                ),
+                columns=["agent", "new_value"],
+            )
+            .groupby(by="agent")
+            .sum()
+        )
+        .reset_index()
+        .sort_values(by="agent")
+    )
+    new_value_array = df["new_value"].to_numpy()
+    array[:, 2] = array[:, 2] + new_value_array
+
+    return array, state_tax_collected
 
 
 def perform_exchange(
     wealth_1: float,
     wealth_2: float,
-):
+) -> float:
     production = production_value * (1 - production_tax)
     total_fuzzy = (
         wealth_1**exchange_fuzzy_probability + wealth_2**exchange_fuzzy_probability
@@ -16,40 +62,5 @@ def perform_exchange(
         if wealth_1 > 0
         else wealth_1
     )
-    new_wealth_2 = (
-        (wealth_2**exchange_fuzzy_probability) * production / total_fuzzy
-        if wealth_2 > 0
-        else wealth_2
-    )
 
-    return new_wealth_1, new_wealth_2
-
-
-def expected_exchange(
-    wealth_1: np.array,
-    state_avg_wealth: np.array,
-    probability_array: np.array,
-    people_by_state_array: np.array,
-) -> np.array:
-    # calculate production
-    production = production_value * (wealth_1 + state_avg_wealth)
-    # takes out gov part
-    production_tax_gov = production_tax * production
-    production = production - production_tax_gov
-    # puts a minimal value to not make a division by zero
-    wealth_1[wealth_1 == 0] = 0.01
-    # separates it to exchange_gain
-    total_fuzzy = (
-        wealth_1**exchange_fuzzy_probability
-        + state_avg_wealth**exchange_fuzzy_probability
-    )
-    exchange_gain = (wealth_1**exchange_fuzzy_probability) / total_fuzzy * production
-    # treats any nan case to zero
-    exchange_gain = np.nan_to_num(exchange_gain, copy=True, nan=0.0)
-
-    exchange_gain = (
-        (wealth_1**exchange_fuzzy_probability)
-        * people_by_state_array
-        / probability_array
-    )
-    return exchange_gain
+    return new_wealth_1
