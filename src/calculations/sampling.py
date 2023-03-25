@@ -31,6 +31,7 @@ def sample(array: np.array) -> np.array:
                 ]
             )
             for agent_state in sampling_array[0]
+            if len(array[array[:, 1] == agent_state]) > 1
         ]
     )
 
