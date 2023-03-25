@@ -64,23 +64,44 @@ def choose_if_migrate(
         return state
     else:
         states = [states for states, _ in comparative_states_average.items()]
-        values = np.array(
-            [values[0] for _, values in comparative_states_average.items()]
-        )
-        return np.random.choice(
-            states,
-            size=1,
-            replace=False,
-            p=values / values.sum(),
-        )[0]
+        try:
+            values = np.array(
+                [
+                    values[0] if values[0] > 0 else 0
+                    for _, values in comparative_states_average.items()
+                ]
+            )
+            return np.random.choice(
+                states,
+                size=1,
+                replace=False,
+                p=values / values.sum(),
+            )[0]
+        except ValueError:
+            values_min = np.array(list(comparative_states_average.values())).min()
+            values = np.array(
+                [
+                    values[0] - values_min
+                    for _, values in comparative_states_average.items()
+                ]
+            )
+            if len(values) == 1 and not values[0]:
+                return list(comparative_states_average.keys())[0]
+
+            return np.random.choice(
+                states,
+                size=1,
+                replace=False,
+                p=values / values.sum(),
+            )[0]
 
 
 def calculate_migration_probability(value: float, value_new: float) -> float:
     if not value_new or value > value_new:
         return [1, 0]
-    if value < 0 and value_new > 0:
+    if value < 0 and value_new > value:
         return [0, 1]
     return [
-        1 - np.exp(-value / (migration_coefficient * value_new)),
-        np.exp(-value / (migration_coefficient * value_new)),
+        np.exp(-(value_new - value) / (migration_coefficient)),
+        1 - np.exp(-(value_new - value) / (migration_coefficient)),
     ]

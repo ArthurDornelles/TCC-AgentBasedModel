@@ -1,6 +1,6 @@
 import numpy as np
 
-from config import phi, number_of_states, total_people, pop_density_coefficient
+from config import number_of_states, total_people, pop_density_coefficient, phi
 
 
 def living_cost_calculation(array: np.array) -> np.array:
@@ -20,8 +20,12 @@ def individual_cost(state_array: np.array) -> np.array:
 
 def weight_function(state_array: np.array, average: float) -> np.array:
     state_array = (
-        0.8 * average + 2 * average * np.tanh(state_array / average - 1) / 2
-    ) * np.exp(
-        pop_density_coefficient * (state_array.size) / (total_people * number_of_states)
+        phi
+        * (0.8 * average + 2 * average * np.tanh(state_array / average - 1) / 2)
+        * np.exp(
+            pop_density_coefficient
+            * (state_array.size)
+            / (total_people * number_of_states)
+        )
     )
     return state_array
