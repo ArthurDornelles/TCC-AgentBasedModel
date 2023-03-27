@@ -25,9 +25,11 @@ def get_iteration_statistics(
 
 
 def get_iteration_flux_statistics(array: np.array, iteration: int) -> pd.DataFrame:
-    array = array[~(array[:, 1] == array[:, 3])][:, [1, 3]]
-    df = pd.DataFrame(array, columns=["origin", "destination"])
+    array = array[~(array[:, 1] == array[:, 3])][:, [1, 2, 3]]
+    df = pd.DataFrame(array, columns=["origin", "wealth_mean", "destination"])
     df["iteration"] = iteration
     df["count"] = 1
-    df = df.groupby(by=["origin", "destination", "iteration"]).sum()
+    df = df.groupby(by=["origin", "destination", "iteration"]).agg(
+        {"wealth_mean": "mean", "count": "sum"}
+    )
     return df
