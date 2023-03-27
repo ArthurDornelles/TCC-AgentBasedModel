@@ -8,12 +8,20 @@ def make_transaction(
     array: np.array, sampling_array: np.array, state_tax_collected: dict
 ) -> np.array:
     """ """
-    state_tax_collected = {
-        int(state): state_tax_collected[state]
-        + sampling_array[sampling_array[:, 0] == state, 0].size
-        * (production_value * production_tax)
-        for state in np.unique(array[:, 1])
-    }
+    if type(production_tax) == float:
+        state_tax_collected = {
+            int(state): state_tax_collected[state]
+            + sampling_array[sampling_array[:, 0] == state, 0].size
+            * (production_value * production_tax)
+            for state in np.unique(array[:, 1])
+        }
+    elif type(production_tax) == dict:
+        state_tax_collected = {
+            int(state): state_tax_collected[state]
+            + sampling_array[sampling_array[:, 0] == state, 0].size
+            * (production_value[state] * production_tax[state])
+            for state in np.unique(array[:, 1])
+        }
     sampling_array = np.c_[
         sampling_array,
         np.array([array[array[:, 0] == agent][0][2] for agent in sampling_array[:, 1]]),
@@ -22,8 +30,12 @@ def make_transaction(
     perform_exchange_v = np.vectorize(perform_exchange)
     sampling_array = np.c_[
         sampling_array,
-        perform_exchange_v(sampling_array[:, 3], sampling_array[:, 4]),
-        perform_exchange_v(sampling_array[:, 4], sampling_array[:, 3]),
+        perform_exchange_v(
+            sampling_array[:, 0], sampling_array[:, 3], sampling_array[:, 4]
+        ),
+        perform_exchange_v(
+            sampling_array[:, 0], sampling_array[:, 4], sampling_array[:, 3]
+        ),
     ]
     df = (
         (
@@ -50,10 +62,14 @@ def make_transaction(
 
 
 def perform_exchange(
+    state: float,
     wealth_1: float,
     wealth_2: float,
 ) -> float:
-    production = production_value * (1 - production_tax)
+    if type(production_tax) == float:
+        production = production_value * (1 - production_tax)
+    elif type(production_tax) == dict:
+        production = production_value[state] * (1 - production_tax[state])
     total_fuzzy = (
         wealth_1**exchange_fuzzy_probability + wealth_2**exchange_fuzzy_probability
     )
@@ -62,5 +78,4 @@ def perform_exchange(
         if wealth_1 > 0
         else wealth_1
     )
-
     return new_wealth_1
