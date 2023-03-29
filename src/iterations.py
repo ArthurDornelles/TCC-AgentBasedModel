@@ -40,6 +40,11 @@ def make_iterations(
             array, state_tax_collected = add_government_help(array, state_tax_collected)
             logger.info(f"Finished government help, starting migration")
 
+        df_analysis = get_iteration_statistics(array, logging_tax, iteration)
+        logger.info(f"Saving analysis")
+
+        if not ((iteration + 1) % iterations_to_migration):
+
             array = perform_migration(array, state_tax_collected)
             logger.info(f"Finished migration, starting analysis")
 
@@ -48,9 +53,6 @@ def make_iterations(
 
             # remembers this state and wealth for next migration
             array[:, 3:5] = array[:, 1:3]
-
-        df_analysis = get_iteration_statistics(array, logging_tax, iteration)
-        logger.info(f"Saving analysis")
 
         save_df_to_db(df_analysis, table.iter_table_name)
         logger.info(f"Finished iteration {iteration+1}")
