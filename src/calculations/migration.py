@@ -100,8 +100,11 @@ def calculate_migration_probability(value: float, value_new: float) -> float:
     """[probability to stay, probability to migrates]"""
     if not value_new or value > value_new:
         return [1, 0]
-    if value < 0 and value_new > value:
-        return [0, 1]
+    if value < 0:
+        return [
+            np.exp(-(value_new - value) / (-value * migration_coefficient)),
+            1 - np.exp(-(value_new - value) / (-value * migration_coefficient)),
+        ]
     return [
         np.exp(-(value_new - value) / (value * migration_coefficient)),
         1 - np.exp(-(value_new - value) / (value * migration_coefficient)),
